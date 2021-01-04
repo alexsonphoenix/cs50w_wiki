@@ -1,0 +1,25 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Create a new entry
+{% endblock %}
+
+{% block body %}
+    <div>
+      <h2>Wiki</h2>
+      <form method="post" action="{% url 'create'%}">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="title">Entry Title:</label>
+            <input id="title" class="textarea" type="text" name="entry_title" placeholder="Enter entry title">
+          </div>
+
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Example textarea</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="20" name="entry_content"></textarea>
+          </div>
+
+          <input class="btn btn-info" type="submit" value="Save">
+      </form>
+    </div>
+{% endblock %}
