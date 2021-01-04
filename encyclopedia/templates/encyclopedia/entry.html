@@ -1,12 +1,17 @@
 {% extends "encyclopedia/layout.html" %}
 
 {% block title %}
-    {{entry_titles}}
+    {{entry_title}}
 {% endblock %}
 
 {% block body %}
-    <div class="text-center"> <h1>Wikipedia</h1> </div>
+    <div class="text-center"> <h1>{{entry_title}}</h1> </div>
 
+    <div class="text-left">
+      <button type="button" class="btn btn-dark" >
+        <a href="{% url 'edit' slug=entry_title %}">Edit this page.</a>
+      </button>
+    </div>
     {{entry_content|safe}}
 
 {% endblock %}

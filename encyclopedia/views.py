@@ -3,7 +3,7 @@ from . import util
 
 from markdown2 import Markdown
 import re # regular expression
-
+import random as rdm
 
 def index(request):
     """
@@ -47,7 +47,7 @@ def entry(request, slug):
     markdowner = Markdown()
 
     context = {
-        "entry_titles": slug,
+        "entry_title": slug,
         "entry_content": markdowner.convert(util.get_entry(slug))
     }
 
@@ -58,17 +58,50 @@ def create(request):
     """
     Create wiki entries
     """
-    if request.method == 'GET':
 
+    if request.method == 'GET':
         return render(request, "encyclopedia/create.html")
 
     elif request.method == 'POST':
         entry_title = request.POST.get('entry_title')
         entry_content = request.POST.get('entry_content')
 
-        # Now save the title and content to /entries folder as .md Markdown file
+        entries = util.list_entries()
 
-        return render(request, "encyclopedia/create.html")
+        if entry_title in entries:
+            context = {
+                "error": "Title already exists"
+            }
+        else:
+            context = {
+                "error": None,
+            }
+            # Now save the title and content to /entries folder as .md Markdown file
+            util.save_entry(entry_title, entry_content)
+
+        return render(request, "encyclopedia/create.html", context)
+
+
+def edit(request,slug):
+    """
+    Edit wiki entry
+    """
+
+    if request.method == 'GET':
+        context = {
+            "entry_title": slug,
+            "entry_content": util.get_entry(slug)
+        }
+        return render(request, "encyclopedia/edit.html", context)
+
+    elif request.method == 'POST':
+        entry_content = request.POST.get('entry_content') #get the new content
+        util.save_entry(slug, entry_content) #save the new content
+
+        return redirect('/wiki/'+slug)
+
 
 def random(request):
-    pass
+    entries = util.list_entries()
+    slug = rdm.choice(entries)
+    return redirect('/wiki/'+slug)
